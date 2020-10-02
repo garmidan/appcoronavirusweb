@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'estilos/css/index.css' %}">
+    <script src="{% static 'estilos/js/jquery/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'estilos/js/js/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'estilos/js/js/popper.min.js' %}" type="text/javascript"></script>
+    <title>Test Sintomas</title>
+</head>
+
+<body>
+    <div id="content">
+
+        {% if validahora == 1%}
+        <div class="alert alert-danger" id="validacionhora" role="alert">
+            debe pasar minimo 24 horas!
+        </div>
+        {% endif %}
+        <div class="alert alert-danger" style="display: none;" id="validarcorreo" role="alert">
+            Los correos no coinciden!
+        </div>
+        
+        <h1>Test de verificación de sintomas diaria</h1>
+        <h6>Las personas deben diligenciar diariamente la encuesta de síntomas antes de subirse a su vuelo</h6>
+        <form action="/registrar/" method="POST">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="nombres">nombres</label>
+                    <input type="text" onkeyup="javascript:this.value=this.value.toUpperCase();" name="nombres"
+                        class="form-control" required id="nombres">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="apellidos">apellidos</label>
+                    <input type="text" onkeyup="javascript:this.value=this.value.toUpperCase();" name="apellidos"
+                        class="form-control" required id="apellidos">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="tipocedula">Tipo Documento</label>
+                    <select id="tipocedula" required name="tipodocumento" class="form-control">
+                        <option>Seleccione</option>
+                        {% for dato in listtipodocumento %}
+                        <option value="{{dato.id}}">{{dato.tipodocumento}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="numerodocumento">Numero Documento</label>
+                    <input type="number" required class="form-control" id="numerodocumento" name="numerodocumento">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="correo">Correo</label>
+                    <input type="email" required class="form-control" id="correo" name="correo">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="correo">Confirmar Correo</label>
+                    <input type="email" onpaste="return false" required class="form-control" id="confirmarcorreo"
+                        name="confirmarcorreo">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="celular">Numero Celular</label>
+                    <input type="number" required class="form-control" id="celular" name="celular">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="guardar" name="registrar">Registrar</button>
+        </form>
+    </div>
+
+    <script>
+        $("#guardar").on("click", function (event) {
+            var correo = $("#correo").val();
+            var confirmarcorreo = $("#confirmarcorreo").val();
+            var numerodocumento = $("#numerodocumento").val();
+            var count = 0;
+            if (confirmarcorreo == correo) {
+                $("#validarcorreo").hide();
+                for (let index = 0; index < numerodocumento.length; index++) {
+                    count = count + 1;
+                }
+                if (count >= 7 && count <= 10) {
+                   
+                } else {
+                    $('#numerodocumento').parent().append('<span class="error">Formato no valido</span>');
+                    event.preventDefault();
+                }
+                
+                
+            } else {
+                event.preventDefault();
+                $("#validarcorreo").show();
+            }
+            // resto de tu codigo
+        });
+    </script>
+
+
+</body>
+
+</html>

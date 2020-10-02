@@ -1,0 +1,9 @@
+#content{
+    width: 70%;
+    height: 300px;
+    margin-left: 150px;
+}
+
+#content h1,h6{
+    text-align: center;
+}

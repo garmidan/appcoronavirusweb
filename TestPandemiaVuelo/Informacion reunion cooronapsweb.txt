@@ -1,0 +1,5 @@
+1. Obtener el cataloo de servicios de Coronaap-REST que seran utiliados(modificados) para CoronaAppWeb.(Diagnostico y Generacion de QR).
+2. El envio del QR(via email).
+3. Construir la estrategia de despliegue hacia AWS (DevOps).
+4. Establecer VPN.
+
