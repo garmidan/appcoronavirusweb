@@ -7,7 +7,9 @@ import random
 import pyqrcode
 import png
 from pyqrcode import QRCode
-from PIL import ImageFile, ImageOps, Image
+from PIL import Image  
+import PIL 
+from django.conf import settings
 
 def registrar(request):
     validahora = 0
@@ -79,18 +81,16 @@ def resultado(request,identificacion):
             obtenerultimoregistro.colorqr = "Amarillo"
         elif si <= 0:
             obtenerultimoregistro.colorqr = "Verde"
-        url = str(request.build_absolute_uri)
-        print("Parcero esta es la url = "+url)
+        print(request.build_absolute_uri)
         # Generate QR code 
-        url = pyqrcode.create(url)  
+        url = pyqrcode.create("https://github.com/garmidan/appcoronavirusweb")  
         url.png("media/codigosqr/"+identificacion+".png", scale = 6)
-        image = "media/codigosqr/"+identificacion+".png"
-        img = ImageFile.Image.open(image)
-        obtenerultimoregistro.codigoqr = img
+        obtenerultimoregistro.codigoqr = "codigosqr/"+identificacion+".png"
         obtenerultimoregistro.identificacion = identificacion
         obtenerultimoregistro.fechaprueba = datetime.now()   
         nombrescompletos = obtenerultimoregistro.usuario.nombres + " " +obtenerultimoregistro.usuario.apellidos 
         obtenerultimoregistro.save()
+        
         
         return render(request,"mostrarresultados.html",{"nombres":nombrescompletos,"colorqr":obtenerultimoregistro.colorqr})
     return render(request,"preguntas.html",{"validar":validar})

@@ -22,7 +22,8 @@ class Test(models.Model):
     colorqr = models.CharField(max_length=15,null=True, blank=True)
     fechaprueba = models.DateTimeField('date published',null=True, blank=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
+    def __unicode__(self,):
+        return str(self.codigoqr)
 
 class Preguntastes(models.Model):
     pregunta = models.CharField(max_length=80)
