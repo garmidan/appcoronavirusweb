@@ -15,13 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from AppTestPandemiaVuelo.views import registrar,resultado
+from AppTestPandemiaVuelo.views import registrar,resultado,inicio
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('inicio/', inicio),
     path('registrar/', registrar),
-    path('resultado/<str:identificacion>',resultado)
+    path('resultado/<str:identificacion>',resultado),
+
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

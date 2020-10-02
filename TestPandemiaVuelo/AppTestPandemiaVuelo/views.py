@@ -18,6 +18,9 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
+def inicio(request):
+    return render(request,"inicio.html")
+
 def registrar(request):
     validahora = 0
     sumita = 0
