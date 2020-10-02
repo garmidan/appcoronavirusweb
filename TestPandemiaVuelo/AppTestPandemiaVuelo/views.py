@@ -7,9 +7,16 @@ import random
 import pyqrcode
 import png
 from pyqrcode import QRCode
+from pathlib import Path
 from PIL import Image  
 import PIL 
 from django.conf import settings
+from django.core.mail import send_mail
+import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 
 def registrar(request):
     validahora = 0
@@ -90,7 +97,25 @@ def resultado(request,identificacion):
         obtenerultimoregistro.fechaprueba = datetime.now()   
         nombrescompletos = obtenerultimoregistro.usuario.nombres + " " +obtenerultimoregistro.usuario.apellidos 
         obtenerultimoregistro.save()
-        
-        
+        try:  
+            imgfilename  = "media/codigosqr/"+identificacion+".png"
+            subject = "Test"
+            img_data = open(imgfilename, 'rb').read()
+            msg = MIMEMultipart()
+            envia = settings.EMAIL_HOST_USER
+            recibe= obtenerultimoregistro.usuario.correo
+            text = MIMEText("test")
+            msg.attach(text)
+            image = MIMEImage(img_data, name=os.path.basename(imgfilename))
+            msg.attach(image)
+            s = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+            s.ehlo()
+            s.starttls()
+            s.ehlo()
+            s.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            s.sendmail(envia, recibe, msg.as_string())
+            s.quit()
+        except IOError: 
+            print("errro al enviar correo con")
         return render(request,"mostrarresultados.html",{"nombres":nombrescompletos,"colorqr":obtenerultimoregistro.colorqr})
     return render(request,"preguntas.html",{"validar":validar})
