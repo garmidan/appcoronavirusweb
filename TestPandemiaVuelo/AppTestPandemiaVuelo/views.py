@@ -29,6 +29,7 @@ def consultar(request):
         if Usuario.objects.filter(numerodocumento=cedulaconsultar,correo=correoconsultar).exists():
             usuarioconsultado = Usuario.objects.get(numerodocumento=cedulaconsultar)
             if Test.objects.filter(usuario=usuarioconsultado).exists():
+                validar = 3
                 ultimotest = Test.objects.filter(usuario=usuarioconsultado).last()
                 return render(request,"resultadoconsulta.html",{"usuarioconsultado":usuarioconsultado,"validar":validar,"ultimotest":ultimotest})
             else:
@@ -73,6 +74,33 @@ def reenviar(request):
     return render(request,"resultadoconsulta.html",{"mensaje":mensaje})
 
 def realizartest(request):
+    preguntas = Preguntastes.objects.all()
+    if request.method == 'POST':
+        validacion = 0
+        cedulaconsultartest = request.POST["cedulaconsultar"]
+        if Usuario.objects.filter(numerodocumento=cedulaconsultartest).exists():
+            usuarioconsultadotest = Usuario.objects.get(numerodocumento=cedulaconsultartest)
+            if Test.objects.filter(usuario=usuarioconsultadotest).exists():
+                ultimotesting = Test.objects.filter(usuario=usuarioconsultadotest).last()
+                hora_actual = datetime.now()
+                fecharegistro = datetime.date(ultimotesting.fechaprueba)
+                horaregistro = datetime.time(ultimotesting.fechaprueba)
+                combinacionfechabase = datetime.combine(fecharegistro,horaregistro)
+                total = (hora_actual-combinacionfechabase).total_seconds()
+                minutos = total / 60
+                horas = minutos / 60
+                if horas >=24:
+                    validatest = 1
+                    identificacion = random.randrange(1000000000000000000,100000000000000000000)
+                    return render(request,"realizartesnuevo.html",{"preguntas":preguntas,"usuariotest":usuarioconsultadotest,"validatest":validatest,"identificacion":identificacion})
+                else:
+                    validacion = 3
+                    return render(request,"resultadoconsulta.html",{"validacion":validacion,"usuario":usuarioconsultadotest,"resultadotest":ultimotesting})
+            else:
+               validacion = 2 
+               return render(request,"testnuevo.html",{"validacion":validacion})
+        else:
+            validacion = 1
     return render(request,"testnuevo.html")
 
 def registrar(request):

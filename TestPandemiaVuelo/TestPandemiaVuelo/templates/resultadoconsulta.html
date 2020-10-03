@@ -18,32 +18,68 @@
 </head>
 
 <body>
-    <h1 style="text-align: center;">{{usuarioconsultado.nombres}} {{usuarioconsultado.apellidos}}</h1>
-    <p style="text-align: center;color: blue;">Este fue su ultimo resultado del diagnostico que realizo</p>
-    <br/>
+    {% if validacion == 3%}
     <div style="width: 35%;height: 200px;margin-left: 450px;">
-        {% if validar == 2%}
-            <h1>Esta registrado pero no ha realizado ningun test</h1>
-        {% else %}
-            <h3>Fecha Test: {{ultimotest.fechaprueba}}</h3>
-            {% if ultimotest.colorqr == "Verde"%}
-            <h3 style="color: green;">Resultado Test: No ha presentado ningun sintomas puede viajar</h3>
-            <p>Recuerde tomar las prevenciones respectivas como tapabocas distanciaminento y lavarse las manos frecuentemente</p>
-            <br/>
-            <p style="color: mediumblue;">Si desea reenviar el codigo QR para el diagnostico de su prueba dar click en reenviar. Recuerde que el dia que hizo la prueba se le envio el codigo QR al correo solo si desea reenviarlo click en  Reenviar</p>
-            <form method="POST" action="/reenviar/">
-                {% csrf_token %}
-                <input type="email" style="display: none;" value="{{usuarioconsultado.correo}}" name="reenviar">
-                <input type="number"  value="{{ultimotest.identificacion}}" style="display: none;" name="urlimagen">
-                <button type="submit" id="enviar" class="btn btn-info">Reenviar</button>
-            </form>
-            {% endif %}
-       {% endif %}
-       
-            <div class="alert alert-danger" style="display: none;" id="validacionhora" role="alert">
-                Se ha enviado el correo exitosamente
-            </div>
-      
+        <h1 style="text-align: center;">{{usuario.nombres}} {{usuario.apellidos}} .Deben pasar 24 horas minimo para volver a realizar el test</h1>
+        <p style="text-align: center;color: blue;">Este fue su ultimo resultado del diagnostico que realizo en las ultimas 24 horas</p>
+        <br />
+        <h3>Fecha Test: {{resultadotest.fechaprueba}}</h3>
+        {% if resultadotest.colorqr == "Verde"%}
+        <h3 style="color: green;">Resultado Test: No ha presentado ningun sintomas puede viajar</h3>
+        <p>Recuerde tomar las prevenciones respectivas como tapabocas distanciaminento y lavarse las manos
+            frecuentemente</p>
+        
+        {% endif %}
+        {% if resultadotest.colorqr == "Amarillo"%}
+        <h3 style="color: yellow;">Resultado Test: Presento un sintomas viajar con precaucion </h3>
+        <p>Recuerde tomar las prevenciones respectivas como tapabocas distanciaminento y lavarse las manos
+            frecuentemente</p>
+        {% endif %}
+        {% if resultadotest.colorqr == "Rojo"%}
+        <h3 style="color: red;">Resultado Test: No puede viajar </h3>
+        {% endif %}
+        <br />
+        
     </div>
+    {% endif %}
+    {% if validar == 3%}
+    <div style="width: 35%;height: 200px;margin-left: 450px;">
+        <h1 style="text-align: center;">{{usuarioconsultado.nombres}} {{usuarioconsultado.apellidos}}</h1>
+        <p style="text-align: center;color: blue;">Este fue su ultimo resultado del diagnostico que realizo</p>
+        <br />
+        {% if validar == 2%}
+        <h1>Esta registrado pero no ha realizado ningun test</h1>
+        {% else %}
+        <h3>Fecha Test: {{ultimotest.fechaprueba}}</h3>
+        {% if ultimotest.colorqr == "Verde"%}
+        <h3 style="color: green;">Resultado Test: No ha presentado ningun sintomas puede viajar</h3>
+        <p>Recuerde tomar las prevenciones respectivas como tapabocas distanciaminento y lavarse las manos
+            frecuentemente</p>
+        {% endif %}
+        {% if ultimotest.colorqr == "Amarillo"%}
+        <h3 style="color: yellow;">Resultado Test: Presento un sintomas viajar con precaucion </h3>
+        <p>Recuerde tomar las prevenciones respectivas como tapabocas distanciaminento y lavarse las manos
+            frecuentemente</p>
+        {% endif %}
+        {% if ultimotest.colorqr == "Rojo"%}
+        <h3 style="color: red;">Resultado Test: No puede viajar </h3>
+        {% endif %}
+        {% endif %}
+        <br />
+        <p style="color: mediumblue;">Si desea reenviar el codigo QR para el diagnostico de su prueba dar click en
+            reenviar. Recuerde que el dia que hizo la prueba se le envio el codigo QR al correo solo si desea reenviarlo
+            click en Reenviar</p>
+        <form method="POST" action="/reenviar/">
+            {% csrf_token %}
+            <input type="email" style="display: none;" value="{{usuarioconsultado.correo}}" name="reenviar">
+            <input type="number" value="{{ultimotest.identificacion}}" style="display: none;" name="urlimagen">
+            <button type="submit" id="enviar" class="btn btn-info">Reenviar</button>
+        </form>
+        <div class="alert alert-danger" style="display: none;" id="validacionhora" role="alert">
+            Se ha enviado el correo exitosamente
+        </div>
+    </div>
+    {% endif %}
 </body>
+
 </html>

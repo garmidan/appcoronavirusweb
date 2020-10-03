@@ -20,9 +20,14 @@
 <body>
     <h1 style="text-align: center;">Realizar test</h1>
     <br/>
-    {% if validar == 1%}
+    {% if validacion == 1%}
         <div class="alert alert-danger" id="validar" role="alert">
             Verifique bien sus datos!
+        </div>
+    {% endif %}
+    {% if validacion == 2%}
+        <div class="alert alert-danger" id="validar" role="alert">
+            Estas registrado pero nos ha hecho ningun test!
         </div>
     {% endif %}
     <div style="width: 35%;height: 200px;margin-left: 450px;">
