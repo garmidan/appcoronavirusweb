@@ -15,13 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from AppTestPandemiaVuelo.views import registrar,resultado,inicio
+from AppTestPandemiaVuelo.views import registrar,resultado,inicio, consultar, reenviar, realizartest
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('inicio/', inicio),
     path('registrar/', registrar),
+    path('consultar/', consultar),
+    path('realizartest/', realizartest),
+    path('reenviar/', reenviar),
     path('resultado/<str:identificacion>',resultado),
 
 ]

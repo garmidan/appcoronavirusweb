@@ -20,9 +20,16 @@
 <body>
     <div id="content">
 
-        {% if validahora == 1%}
+        {% if validar == 1%}
         <div class="alert alert-danger" id="validacionhora" role="alert">
-            debe pasar minimo 24 horas!
+            la cedula ya existe!
+            <p><a href="../consultar/">Si desea consultar click aqui?</a></p>
+            <p><a href="../realizartest/">Si desea hacer de nuevo el test click aqui. Recuerde que deben pasar minimo 24 horas para realizar de nuevo el test?</a></p>
+        </div>
+        {% endif %}
+        {% if validar == 2%}
+        <div class="alert alert-danger" id="validacionhora" role="alert">
+            este correo ya esta en uso!
         </div>
         {% endif %}
         <div class="alert alert-danger" style="display: none;" id="validarcorreo" role="alert">

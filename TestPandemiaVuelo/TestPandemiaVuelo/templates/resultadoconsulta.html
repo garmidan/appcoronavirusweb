@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'estilos/css/index.css' %}">
+    <script src="{% static 'estilos/js/jquery/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'estilos/js/js/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'estilos/js/js/popper.min.js' %}" type="text/javascript"></script>
+    <title>Test Sintomas</title>
+</head>
+
+<body>
+    <h1 style="text-align: center;">{{usuarioconsultado.nombres}} {{usuarioconsultado.apellidos}}</h1>
+    <p style="text-align: center;color: blue;">Este fue su ultimo resultado del diagnostico que realizo</p>
+    <br/>
+    <div style="width: 35%;height: 200px;margin-left: 450px;">
+        {% if validar == 2%}
+            <h1>Esta registrado pero no ha realizado ningun test</h1>
+        {% else %}
+            <h3>Fecha Test: {{ultimotest.fechaprueba}}</h3>
+            {% if ultimotest.colorqr == "Verde"%}
+            <h3 style="color: green;">Resultado Test: No ha presentado ningun sintomas puede viajar</h3>
+            <p>Recuerde tomar las prevenciones respectivas como tapabocas distanciaminento y lavarse las manos frecuentemente</p>
+            <br/>
+            <p style="color: mediumblue;">Si desea reenviar el codigo QR para el diagnostico de su prueba dar click en reenviar. Recuerde que el dia que hizo la prueba se le envio el codigo QR al correo solo si desea reenviarlo click en  Reenviar</p>
+            <form method="POST" action="/reenviar/">
+                {% csrf_token %}
+                <input type="email" style="display: none;" value="{{usuarioconsultado.correo}}" name="reenviar">
+                <input type="number"  value="{{ultimotest.identificacion}}" style="display: none;" name="urlimagen">
+                <button type="submit" id="enviar" class="btn btn-info">Reenviar</button>
+            </form>
+            {% endif %}
+       {% endif %}
+       
+            <div class="alert alert-danger" style="display: none;" id="validacionhora" role="alert">
+                Se ha enviado el correo exitosamente
+            </div>
+      
+    </div>
+</body>
+</html>

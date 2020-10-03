@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from AppTestPandemiaVuelo.models import Preguntastes,Tipodocumento,Usuario, Test
 from django.utils.datastructures import MultiValueDictKeyError
 from datetime import datetime, timezone
@@ -21,9 +21,62 @@ from email.mime.multipart import MIMEMultipart
 def inicio(request):
     return render(request,"inicio.html")
 
+def consultar(request):
+    validar = 0
+    if request.method == 'POST':
+        cedulaconsultar = request.POST["cedulaconsultar"]
+        correoconsultar = request.POST["correoconsultar"]
+        if Usuario.objects.filter(numerodocumento=cedulaconsultar,correo=correoconsultar).exists():
+            usuarioconsultado = Usuario.objects.get(numerodocumento=cedulaconsultar)
+            if Test.objects.filter(usuario=usuarioconsultado).exists():
+                ultimotest = Test.objects.filter(usuario=usuarioconsultado).last()
+                return render(request,"resultadoconsulta.html",{"usuarioconsultado":usuarioconsultado,"validar":validar,"ultimotest":ultimotest})
+            else:
+                validar = 2
+                return render(request,"resultadoconsulta.html",{"usuarioconsultado":usuarioconsultado,"validar":validar})
+            return render(request,"resultadoconsulta.html",{"usuarioconsultado":usuarioconsultado})
+        else:
+            validar = 1
+            return render(request,"consultar.html",{"validar":validar})
+    return render(request,"consultar.html")
+
+def reenviar(request):
+    mensaje = 0
+    if request.method == 'POST':
+        correo = request.POST["reenviar"]
+        urlimagen = request.POST["urlimagen"]
+        try:  
+            imgfilename  = "media/codigosqr/"+urlimagen+".png"
+            subject = "Reenvio Codigo QR"
+            img_data = open(imgfilename, 'rb').read()
+            msg = MIMEMultipart()
+            msg['Subject'] = subject
+            envia = settings.EMAIL_HOST_USER
+            recibe= correo
+            text = MIMEText("Este es su codigo QR para presentar en el aeropuerto")
+            msg.attach(text)
+            image = MIMEImage(img_data, name=os.path.basename(imgfilename))
+            msg.attach(image)
+            s = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+            s.ehlo()
+            s.starttls()
+            s.ehlo()
+            s.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            s.sendmail(envia, recibe, msg.as_string())
+            s.quit()
+            mensaje = 1
+            return redirect("../consultar")
+        except IOError: 
+            print("error al enviar correo con imagen")
+    else:
+        return render(request,"resultadoconsulta.html",{"mensaje":mensaje})
+    return render(request,"resultadoconsulta.html",{"mensaje":mensaje})
+
+def realizartest(request):
+    return render(request,"testnuevo.html")
+
 def registrar(request):
-    validahora = 0
-    sumita = 0
+    validar = 0
     listtipodocument = Tipodocumento.objects.all()
     if request.method == 'POST':
         listapreguntas = Preguntastes.objects.all()
@@ -37,40 +90,21 @@ def registrar(request):
         identificacion = random.randrange(1000000000000000000,100000000000000000000)
         if validarcorreo == correo:
             if Usuario.objects.filter(numerodocumento=numerodocumento).exists():
-                existusuario = Usuario.objects.get(numerodocumento=numerodocumento)
-                if Test.objects.filter(usuario=existusuario).exists():
-                    existest = Test.objects.get(usuario=existusuario)
-                    hora_actual = datetime.now()
-                    fecharegistro = datetime.date(existest.fechaprueba)
-                    horaregistro = datetime.time(existest.fechaprueba)
-                    combinacionfechabase = datetime.combine(fecharegistro,horaregistro)
-                    total = (hora_actual-combinacionfechabase).total_seconds()
-                    minutos = total / 60
-                    horas = minutos / 60
-                    if horas >=24:
-                        guardartestnuevo = Test(usuario=existusuario)
-                        guardartestnuevo.save()
-                        return render(request,"preguntas.html",{"preguntas":listapreguntas,"validahora":validahora})
-                    else:
-                        validahora = 1
-                        return render(request,"registro.html",{"listtipodocumento":listtipodocument,"validahora":validahora})
-                else:
-                    guardartestnuevo1 = Test(usuario=existusuario)
-                    guardartestnuevo1.save()
-                    return render(request,"preguntas.html",{"preguntas":listapreguntas,"validahora":validahora})
+                validar = 1
             else:
-                documento = Tipodocumento(id=tipodocumento)
-                guardarusuario = Usuario(tipodocumento=documento,nombres=nombres,apellidos=apellidos
-                ,celular=celular,correo=correo,numerodocumento=numerodocumento)
-                guardarusuario.save()
-                usuarionumerodocumento = Usuario.objects.get(numerodocumento=numerodocumento)
-                guardarTest = Test(usuario=usuarionumerodocumento)
-                guardarTest.save()
-                return render(request,"preguntas.html",{"preguntas":listapreguntas,"validahora":validahora,"identificacion":identificacion})
-        else:
-            validahora = 2   
+                if Usuario.objects.filter(correo=correo).exists():
+                    validar = 2
+                else:
+                    documento = Tipodocumento(id=tipodocumento)
+                    guardarusuario = Usuario(tipodocumento=documento,nombres=nombres,apellidos=apellidos
+                    ,celular=celular,correo=correo,numerodocumento=numerodocumento)
+                    guardarusuario.save()
+                    usuarionumerodocumento = Usuario.objects.get(numerodocumento=numerodocumento)
+                    guardarTest = Test(usuario=usuarionumerodocumento)
+                    guardarTest.save()
+                    return render(request,"preguntas.html",{"preguntas":listapreguntas,"validar":validar,"identificacion":identificacion})  
             
-    return render(request,"registro.html",{"listtipodocumento":listtipodocument,"validahora":validahora})
+    return render(request,"registro.html",{"listtipodocumento":listtipodocument,"validar":validar})
 
 def resultado(request,identificacion):
     listpreguntas = Preguntastes.objects.all()
@@ -105,9 +139,10 @@ def resultado(request,identificacion):
             subject = "Test"
             img_data = open(imgfilename, 'rb').read()
             msg = MIMEMultipart()
+            msg['Subject'] = subject
             envia = settings.EMAIL_HOST_USER
             recibe= obtenerultimoregistro.usuario.correo
-            text = MIMEText("test")
+            text = MIMEText("Este es su codigo QR para presentar en el aeropuerto")
             msg.attach(text)
             image = MIMEImage(img_data, name=os.path.basename(imgfilename))
             msg.attach(image)

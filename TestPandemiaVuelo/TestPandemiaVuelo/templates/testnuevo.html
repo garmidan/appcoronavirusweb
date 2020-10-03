@@ -18,11 +18,24 @@
 </head>
 
 <body>
-    <h1 style="text-align: center;">Que deseas hacer hoy</h1>
+    <h1 style="text-align: center;">Realizar test</h1>
     <br/>
-    <div class="btn-group btn-group-lg" role="group" aria-label="..."><a type="button" href="../consultar"  class="btn btn-success">Consultar</a></div>
-    <div class="btn-group" role="group" aria-label="..."><a type="button" href="../registrar" class="btn btn-info">Registrarse</a></div>
-    <div class="btn-group btn-group-sm" role="group" aria-label="..."><a  type="button"class="btn btn-primary">Hacer la prueba de nuevo</a></div>
+    {% if validar == 1%}
+        <div class="alert alert-danger" id="validar" role="alert">
+            Verifique bien sus datos!
+        </div>
+    {% endif %}
+    <div style="width: 35%;height: 200px;margin-left: 450px;">
+        <form method="POST" action="/realizartest/">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Digite su cedula</label>
+                <input class="form-control" type="number" required name="cedulaconsultar">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="form-control btn btn-primary"> Consultar</button>
+            </div>
+        </form>
+    </div>
 </body>
-
 </html>
