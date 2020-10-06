@@ -237,6 +237,7 @@ def resultado(request,identificacion):
     validar = "no puede ver los resultados sin primero registrarse no debe saltearse ningun paso"
     si = 0
     no = 0
+    url = ""
     if request.method == 'POST':
         idtest = request.POST["idtest"]
         for preguntas in listpreguntas:
@@ -245,9 +246,10 @@ def resultado(request,identificacion):
                 si = si + 1
             except MultiValueDictKeyError:
                 no = no + 1
+        url = str(request.get_full_path())
         obtenerultimoregistro = Test.objects.get(id=idtest)
          # Generate QR code 
-        url = pyqrcode.create("https://github.com/garmidan/appcoronavirusweb")  
+        url = pyqrcode.create(url)  
         url.png("media/codigosqr/"+identificacion+".png", scale = 6)
         obtenerultimoregistro.codigoqr = "codigosqr/"+identificacion+".png"
         obtenerultimoregistro.identificacion = identificacion
@@ -284,7 +286,7 @@ def resultado(request,identificacion):
                 obtenerultimoregistro.colorqr = "Verde"
         obtenerultimoregistro.save()
         validatetipotest = 1
-        return render(request,"mostrarresultados.html",{"nombres":nombrescompletos,"colorqr":obtenerultimoregistro.colorqr,"validatetipotest":validatetipotest})
+        return render(request,"mostrarresultados.html",{"testultimo":obtenerultimoregistro,"nombres":nombrescompletos,"colorqr":obtenerultimoregistro.colorqr,"validatetipotest":validatetipotest})
     return render(request,"preguntas.html",{"validar":validar})
 
 #TERMINACION PARTE REGISTRAR CON SU RESULTADO

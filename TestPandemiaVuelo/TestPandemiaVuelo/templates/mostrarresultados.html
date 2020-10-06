@@ -43,6 +43,11 @@
             proteccion.</p>
     </div>
     {% endif %}
+    <div style="margin-right: 350px;">
+        <h3>Su codigo qr</h3>
+        <img src="{{testultimo.codigoqr.url}}" />
+    </div>
+    
 {% else %}
     {% if validatetipotest == 2%}
         <a href="../registrar">{{validar}}</a>
@@ -69,6 +74,7 @@
         </div>
         {% endif %}
     {% endif %}
+
 {% endif %}
 </body>
 
