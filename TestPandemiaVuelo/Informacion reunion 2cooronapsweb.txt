@@ -1,0 +1,3 @@
+Base de datos de ellos.
+Ellos crean el usuario para conectarnos a la base de datos y asi comenzar a desarrollar.
+Las preguntas no van a salir solo los colores el rojo,amarillo y verde

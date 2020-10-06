@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from AppTestPandemiaVuelo.views import registrar,resultado,inicio, consultar, reenviar, realizartest
+from AppTestPandemiaVuelo.views import sintomas,registrar,resultado,inicio, consultar, reenviar, realizartest,nuevotest
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
@@ -26,6 +26,8 @@ urlpatterns = [
     path('realizartest/', realizartest),
     path('reenviar/', reenviar),
     path('resultado/<str:identificacion>',resultado),
+    path('sintomas/',sintomas),
+    path('nuevotest/<str:identificacionnuevotest>/<str:numerodocument>',nuevotest),
 
 ]
 

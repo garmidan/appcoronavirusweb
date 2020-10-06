@@ -25,7 +25,12 @@ class Test(models.Model):
     def __unicode__(self,):
         return str(self.codigoqr)
 
-class Preguntastes(models.Model):
+class Preguntastest(models.Model):
     pregunta = models.CharField(max_length=80)
+    def __str__(self):
+        return self.pregunta
+
+class Preguntastestriesgos(models.Model):
+    pregunta = models.CharField(max_length=100)
     def __str__(self):
         return self.pregunta

@@ -18,11 +18,12 @@
 </head>
 
 <body>
+    
+{% if validatetipotest == 1%}  
     <a href="../registrar">{{validar}}</a>
     <h1 style="text-align: center;">{{nombres}}</h1>
     <br />
-    <h6 style="text-align: center;">A continuación se muestra el resultado de su test por favor leer</h6>
-
+    <h6 style="text-align: center;">A continuación se muestra el resultado y el codigo QR que tambien se envio a su correo de su test por favor leer</h6>
     {% if colorqr == "Rojo"%}
     <div style="width: 60%; height: 300px; background-color: #ECF0F0;margin-left: 300px;">
         <h6 style="color: red;">No puede viajar</h6>
@@ -42,11 +43,33 @@
             proteccion.</p>
     </div>
     {% endif %}
-    <script>
-        var url  = window.location.href
-        console.log("Perros la url es = "+url)
-    </script>
-
+{% else %}
+    {% if validatetipotest == 2%}
+        <a href="../registrar">{{validar}}</a>
+        <h1 style="text-align: center;">{{usuario.nombres}}</h1>
+        <br />
+        <h6 style="text-align: center;">A continuación se muestra el resultado de su test por favor leer</h6>
+        {% if colorqr == "Rojo"%}
+        <div style="width: 60%; height: 300px; background-color: #ECF0F0;margin-left: 300px;">
+            <h6 style="color: red;">No puede viajar</h6>
+            <p>Por favor comunicarlo de inmediato a la eps para hacer las pruebas correspondientes</p>
+        </div>
+        {% endif %}
+        {% if colorqr == "Amarillo"%}
+        <div style="width: 60%; height: 300px; background-color: #ECF0F0;margin-left: 300px;">
+            <h6 style="color: #FFBD00;">Puedes viajar con precaucion</h6>
+            <p>Segun el test el dia de hoy has producido uno de los sintomas</p>
+        </div>
+        {% endif %}
+        {% if colorqr == "Verde"%}
+        <div style="width: 60%; height: 300px; background-color: #ECF0F0;margin-left: 300px;">
+            <h6 style="color: green;">Puedes viajar</h6>
+            <p>El dia de hoy no has reportado ningun sintomas de COVID 19. Tener encuenta los siguientes metodos de
+                proteccion.</p>
+        </div>
+        {% endif %}
+    {% endif %}
+{% endif %}
 </body>
 
 </html>

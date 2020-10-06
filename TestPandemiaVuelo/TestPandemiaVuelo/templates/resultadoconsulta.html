@@ -21,7 +21,8 @@
     {% if validacion == 3%}
     <div style="width: 35%;height: 200px;margin-left: 450px;">
         <h1 style="text-align: center;">{{usuario.nombres}} {{usuario.apellidos}} .Deben pasar 24 horas minimo para volver a realizar el test</h1>
-        <p style="text-align: center;color: blue;">Este fue su ultimo resultado del diagnostico que realizo en las ultimas 24 horas</p>
+        <p style="text-align: center;color: blue;">Este fue su ultimo resultado del diagnostico que realizo en las ultimas 24 horas.</p>
+        <p style="color: green;">Tambien hemos reenviado el codigo qr a su correo para que lo presente antes de subir a vuelo</p>
         <br />
         <h3>Fecha Test: {{resultadotest.fechaprueba}}</h3>
         {% if resultadotest.colorqr == "Verde"%}
@@ -66,18 +67,23 @@
         {% endif %}
         {% endif %}
         <br />
-        <p style="color: mediumblue;">Si desea reenviar el codigo QR para el diagnostico de su prueba dar click en
-            reenviar. Recuerde que el dia que hizo la prueba se le envio el codigo QR al correo solo si desea reenviarlo
-            click en Reenviar</p>
-        <form method="POST" action="/reenviar/">
-            {% csrf_token %}
-            <input type="email" style="display: none;" value="{{usuarioconsultado.correo}}" name="reenviar">
-            <input type="number" value="{{ultimotest.identificacion}}" style="display: none;" name="urlimagen">
-            <button type="submit" id="enviar" class="btn btn-info">Reenviar</button>
-        </form>
-        <div class="alert alert-danger" style="display: none;" id="validacionhora" role="alert">
-            Se ha enviado el correo exitosamente
-        </div>
+        {% if validahorita == 1 %}
+            <p style="color: mediumblue;">Si desea reenviar el codigo QR para el diagnostico de su prueba dar click en
+                reenviar. Recuerde que el dia que hizo la prueba se le envio el codigo QR al correo solo si desea reenviarlo
+                click en Reenviar</p>
+            <form method="POST" action="/reenviar/">
+                {% csrf_token %}
+                <input type="email" style="display: none;" value="{{usuarioconsultado.correo}}" name="reenviar">
+                <input type="number" value="{{ultimotest.identificacion}}" style="display: none;" name="urlimagen">
+                <button type="submit" id="enviar" class="btn btn-info">Reenviar</button>
+            </form>
+            <div class="alert alert-danger" style="display: none;" id="validacionhora" role="alert">
+                Se ha enviado el correo exitosamente
+            </div>
+        {% else %}
+            <h7 style="color: red;">Atencion este resultado del test ya no es valido ya pasaron 24 horas debe volver a realizar</h7>
+            <a href="../realizartest">Click aqui para realizar test</a>
+        {% endif %}
     </div>
     {% endif %}
 </body>
