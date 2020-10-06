@@ -27,7 +27,7 @@ urlpatterns = [
     path('reenviar/', reenviar),
     path('resultado/<str:identificacion>',resultado),
     path('sintomas/',sintomas),
-    path('nuevotest/<str:identificacionnuevotest>/<str:numerodocument>',nuevotest),
+    path('nuevotest/',nuevotest),
 
 ]
 

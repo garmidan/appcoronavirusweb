@@ -19,10 +19,11 @@
 
 <body>
     
-    <form method="POST" action="/nuevotest/{{identificacionnuevotest}}/{{usuariotest.numerodocumento}}">
+    <form method="POST" action="/nuevotest/">
         {% csrf_token %}
         <div id="content">
-            <h3>{{usuariotest.nombres}}  {{usuariotest.apellidos}} realize de nuevo la siguiente encuesta</h3>
+            <input type="number" style="display: none;" name="numerodocument" value="{{usuariotest.numerodocumento}}"/>
+            <h3>{{usuariotest.nombres}}  {{usuariotest.apellidos}}</h3>
             <h6>¿Has tenido alguno de los siguientes síntomas en las últimas 24 horas?</h6>
             <br />
             <br />
@@ -35,26 +36,34 @@
                     </tr>
                 </thead>
                 <tbody>
-
                     {% for pregunta in preguntas %}
                     <tr>
                         <td>{{pregunta.pregunta}}</td>
                         <td>
                             <div class="form-check checkbox-rounded checkbox-living-coral-filled mb-2">
-                                <input type="checkbox" class="form-check-input filled-in" id="vehiculo"
-                                    name="si{{pregunta.id}}">
+                                <input type="checkbox" class="form-check-input filled-in a" id="vehiculo"
+                                    value="{{pregunta.pregunta}}" onclick="mehasdadosi()" name="si{{pregunta.id}}" >
                             </div>
                         </td>
                         <td>
                             <div class="form-check checkbox-rounded checkbox-living-coral-filled mb-2">
-                                <input type="checkbox" class="form-check-input filled-in" id="moto" checked name="no">
+                                <input type="checkbox" class="form-check-input filled-in" value="{{pregunta.pregunta}}"
+                                    id="moto" checked name="no">
                             </div>
                         </td>
                     </tr>
                     {% endfor %}
+                    <tr>
+                        <td>Ninguna de las anteriores</td>
+                        <td>
+                            <div class="form-check checkbox-rounded checkbox-living-coral-filled mb-2">
+                                <input type="checkbox" id="ninguno" onclick="toggle(this)"  class="form-check-input filled-in">
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
-            <button type="submit" class="btn btn-primary" id="guardar" name="registrartest">Finalizar</button>
+            <button type="submit" class="btn btn-primary" id="guardar" name="registrartest">Guardar</button>
         </div>
     </form>
     
@@ -85,6 +94,25 @@
         window.onbeforeunload = function () {
             localStorage.setItem('validar', '0');
         };
+    </script>
+    <script type="text/javascript">
+        function toggle(source) {
+            checkboxes = document.getElementsByName('no');
+            checkboxesclass = document.getElementsByClassName("form-check-input filled-in a");
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+                checkboxes[i].checked = true;
+            }
+            for (var j = 0, n = checkboxesclass.length; j < n; j++) {
+                checkboxesclass[j].checked = false;
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function mehasdadosi() {
+            checkboxes = document.getElementById('ninguno');
+            checkboxes.checked = false;
+        }
     </script>
     <script>
         // Refresh Rate is how often you want to refresh the page 

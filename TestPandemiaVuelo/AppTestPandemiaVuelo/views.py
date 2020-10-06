@@ -136,31 +136,39 @@ def realizartest(request):
             validacion = 1
     return render(request,"testnuevo.html")
 
-def nuevotest(request,identificacionnuevotest,numerodocument):
+def nuevotest(request):
+    listpreguntas = Preguntastest.objects.all()
+    listariesgos = Preguntastestriesgos.objects.all()
     si = 0
     no = 0
     colorqr = ""
+    validarsintomas = ""
     if request.method == 'POST':
+        numerodocument = request.POST["numerodocument"]
         for preguntas in Preguntastest.objects.all():
             try:
-                sipreguntastestnuevo = request.POST["si"+str(preguntas.id)]
-                si = si + 1
+                sipreguntas = request.POST["si"+str(preguntas.id)]
+                if sipreguntas == "Fiebre" or sipreguntas == "Dificultad para respirar":
+                    validarsintomas = "yes"
+                else:
+                    si = si + 1
             except MultiValueDictKeyError:
                 no = no + 1
         usuarionuevotest = Usuario.objects.get(numerodocumento=numerodocument)
-        fecha_actual = datetime.now()
-        if si >=2:
+        identificacion = random.randrange(1000000000000000000,100000000000000000000)
+        if validarsintomas == "yes":
             colorqr = "Rojo"
-        elif si == 1:
-            colorqr = "Amarillo"
-        elif si <= 0:
-            colorqr = "Verde"
-        print(request.build_absolute_uri)
-        testnuevoregistro = Test(fechaprueba=fecha_actual,identificacion=identificacionnuevotest,usuario=usuarionuevotest,
-        colorqr=colorqr)     
-        print("El color es = "+colorqr)
-        validatetipotest = 2
-        return render(request,"mostrarresultados.html",{"validatetipotest":validatetipotest,"colorqr":colorqr,"usuario":usuarionuevotest})
+        else:       
+            if si >=3:
+                colorqr = "Rojo"
+            elif si == 2:
+                colorqr = "Amarillo"
+            elif si <= 1:
+                colorqr = "Verde"
+        obtenerultimoregistro = Test(colorqr=colorqr,usuario=usuarionuevotest)
+        obtenerultimoregistro.save()
+        validatetipotest = 1
+        return render(request,"riesgos.html",{"idtest":obtenerultimoregistro,"validatetipotest":validatetipotest,"identificacion":identificacion,"listariesgos":listariesgos})
         # Generate QR code 
     return render(request,"testnuevo.html")
 
@@ -228,7 +236,7 @@ def sintomas(request):
                 obtenerultimoregistro.colorqr = "Verde"
         obtenerultimoregistro.save()
         validatetipotest = 1
-        return render(request,"riesgos.html",{"idtest":obtenerultimoregistro.id,"validatetipotest":validatetipotest,"identificacion":identificacion,"listariesgos":listariesgos})
+        return render(request,"riesgos.html",{"idtest":obtenerultimoregistro,"validatetipotest":validatetipotest,"identificacion":identificacion,"listariesgos":listariesgos})
     return render(request,"preguntas.html",{"validar":validar})
 
 

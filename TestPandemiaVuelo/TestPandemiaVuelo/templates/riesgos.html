@@ -22,7 +22,7 @@
     <form method="POST" action="/resultado/{{identificacion}}">
         {% csrf_token %}
         <div id="content">
-            <input type="number" name="idtest" value="{{idtest}}" style="display: none;"/>
+            <input type="number" name="idtest" value="{{idtest.id}}" style="display: none;"/>
             <h6>¿Preguntas Riesgos?</h6>
             <br />
             <br />
